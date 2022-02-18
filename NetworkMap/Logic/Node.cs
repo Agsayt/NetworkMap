@@ -5,12 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace NetworkMap.Logic
 {
     class Node
     {
-
-        private Guid id;
+        public Guid id;
+        public int index;
         public int posX;
         public int posY;
         public float rSignal;
@@ -18,15 +19,16 @@ namespace NetworkMap.Logic
         private string Name { get; set; }
         private string Description { get; set; }
         private string Location { get; set; }
-        private Pen penColor;
-        private NetworkMap.Form1.NodeMode mode;
+        public Pen penColor;
+        public NetworkMap.Form1.NodeMode mode;
 
         public bool IsSelected { get; set; }
         
-        public Node(int x, int y, int r, NetworkMap.Form1.NodeMode mode)
+        public Node(int indx, int x, int y, int r, NetworkMap.Form1.NodeMode mode)
         {
             this.mode = mode;
-            id = Guid.NewGuid();
+            index = indx;
+            id = new Guid();
             posX = x;
             posY = y;
             var noder = 10;

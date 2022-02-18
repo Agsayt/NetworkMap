@@ -15,3 +15,4 @@ C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\bin\Debug\NetworkMap.pdb
 C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\obj\Debug\NetworkMap.Form1.resources
 C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\obj\Debug\NetworkMap.Properties.Resources.resources
 C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\obj\Debug\NetworkMap.csproj.GenerateResource.Cache
+C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\obj\Debug\NetworkMap.csprojResolveAssemblyReference.cache

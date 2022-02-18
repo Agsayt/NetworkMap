@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,9 @@ namespace NetworkMap
             EditorModeCB.Items.AddRange(Enum.GetNames(typeof(EditorMode)));
             EditorModeCB.SelectedIndex = 0;
             canvas.MouseWheel += canvas_MouseWheel;
+
+            saveFileDialog.Filter = "Text files(*.txt)|*.txt";
+            openFileDialog.Filter = "Text files(*.txt)|*.txt";
 
             canvas.Invalidate();
         }
@@ -69,6 +73,7 @@ namespace NetworkMap
         List<Node> nodeList = new List<Node> ();
         EditorMode _editorMode;
         Node selectedNode;
+        int nextId = 0;
         #endregion
 
         private void canvas_Paint(object sender, PaintEventArgs e)
@@ -98,8 +103,9 @@ namespace NetworkMap
         {
             if (_editorMode == EditorMode.Create)
             {
-                Node node = new Node (e.X, e.Y, 100, _mode);
+                Node node = new Node (nextId, e.X, e.Y, 100, _mode);
                 nodeList.Add (node);
+                nextId++;
                 canvas.Invalidate ();    
             }
 
@@ -160,9 +166,15 @@ namespace NetworkMap
 
             switch (item)
             {
-                case "senderMode": break;
-                case "TransporterMode": break;
-                case "ReceiverMode": break;
+                case "senderMode": 
+                    
+                    break;
+                case "TransporterMode": 
+                    
+                    break;
+                case "ReceiverMode": 
+                    
+                    break;
                 case "EditName":
                     var name = Microsoft.VisualBasic.Interaction.InputBox("Введите название для нода", "Наименование нода", "", this.Width / 2, this.Height / 2);
                     if (name == null)
@@ -186,6 +198,66 @@ namespace NetworkMap
                     selectedNode.SetLocation(location);
                     break;
             }
-        }                
+        }
+
+        #region nodeColors
+        private void ColorSelectorClick(object sender, EventArgs e)
+        {
+            var item  = (sender as ToolStripButton);
+
+            colorDialog.ShowDialog();
+            if (DialogResult == System.Windows.Forms.DialogResult.Cancel)
+                return;
+
+            var selectedColor = colorDialog.Color;
+            item.BackColor = selectedColor;
+            NodeMode modeToChange = 0;
+
+            switch (item.Name)
+            {
+                case "SenderColor": 
+                    modeToChange = NodeMode.Sender;
+                    break;
+                case "TransporterColor":
+                    modeToChange = NodeMode.Transporter;
+                    break;
+                case "ReceiverColor":
+                    modeToChange = NodeMode.Receiver;
+                    break;
+            }
+            ChangeNodesColor(selectedColor, modeToChange);
+        }
+
+        private void ChangeNodesColor(Color selectedColor, NodeMode modeToChange)
+        {
+            foreach (var node in nodeList)
+            {
+                if (node.mode == modeToChange)
+                    node.penColor = new Pen(new SolidBrush(Color.FromArgb(selectedColor.A, selectedColor.R, selectedColor.G, selectedColor.B)));
+            }
+            canvas.Invalidate();
+        }
+        #endregion
+
+        private void SavePreferences_Click(object sender, EventArgs e)
+        {
+            if (saveFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            string filename = saveFileDialog.FileName;
+                        
+            using (FileStream fs = File.Create(filename))
+            {
+                Byte[] nextIndex = new UTF8Encoding(true).GetBytes(nextId.ToString());
+                fs.Write(nextIndex, 0, nextIndex.Length);
+            }
+        }
+
+        private void LoadPreferences_Click(object sender, EventArgs e)
+        {
+            
+
+        }
+
     }
 }
