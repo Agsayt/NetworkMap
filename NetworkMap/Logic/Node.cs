@@ -13,16 +13,19 @@ namespace NetworkMap.Logic
         private Guid id;
         public int posX;
         public int posY;
-        private float rSignal;
+        public float rSignal;
         public float rNode;       
         private string Name { get; set; }
         private string Description { get; set; }
         private string Location { get; set; }
+        private Pen penColor;
+        private NetworkMap.Form1.NodeMode mode;
 
         public bool IsSelected { get; set; }
         
         public Node(int x, int y, int r, NetworkMap.Form1.NodeMode mode)
         {
+            this.mode = mode;
             id = Guid.NewGuid();
             posX = x;
             posY = y;
@@ -73,12 +76,18 @@ namespace NetworkMap.Logic
             float y0 = posY - rSignal;
             float x0Node = posX - rNode;
             float y0Node = posY - rNode;
-            Pen p = Pens.Black;
+            Pen p = null;
+            if (penColor != null)
+                p = penColor;
+            else
+                p = Pens.Black;
 
             if (IsSelected == true)
             {
                 g.DrawEllipse(p, x0, y0, diameter, diameter);
-                p = Pens.Red;
+                if (Name != null)
+                    g.DrawString(Name, new Font("Arial", 12), new SolidBrush(Color.Black), new PointF(posX, posY + rNode + 0.5f));
+                p = Pens.Green;
             }
 
             g.DrawEllipse(p, x0Node, y0Node, nodeDiameter, nodeDiameter);

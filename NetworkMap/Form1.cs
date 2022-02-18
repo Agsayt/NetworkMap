@@ -18,15 +18,35 @@ namespace NetworkMap
             InitializeComponent();
 
             _editorMode = EditorMode.Create;
-            _mode = NodeMode.Sender;
+            _mode = NodeMode.Transporter;
 
             EditorModeCB.Items.AddRange(Enum.GetNames(typeof(EditorMode)));
             EditorModeCB.SelectedIndex = 0;
+            canvas.MouseWheel += canvas_MouseWheel;
 
             canvas.Invalidate();
         }
 
-       
+        // Change radius of the node signal
+        void canvas_MouseWheel(object sender, MouseEventArgs e)
+        {            
+            foreach (Node node in nodeList)
+            {
+                node.IsSelected = false;
+                float dx = node.posX - e.X;
+                float dy = node.posY - e.Y;
+                if (dx * dx + dy * dy <= node.rNode * node.rNode)
+                {
+                    node.IsSelected = true;
+                    node.rSignal += e.Delta/128;
+                    break;
+                }
+
+            }
+            canvas.Invalidate();
+        }
+
+        #region enums
 
         public enum EditorMode
         {
@@ -42,13 +62,17 @@ namespace NetworkMap
             Receiver      
         }
 
-        private NodeMode _mode;
+        #endregion
+        #region vars
+
+        NodeMode _mode;
         List<Node> nodeList = new List<Node> ();
-        private EditorMode _editorMode;        
+        EditorMode _editorMode;
+        Node selectedNode;
+        #endregion
 
         private void canvas_Paint(object sender, PaintEventArgs e)
-        {
-            
+        {            
             foreach (var node in nodeList)
             {
                 node.Draw (e.Graphics);
@@ -77,12 +101,14 @@ namespace NetworkMap
                 Node node = new Node (e.X, e.Y, 100, _mode);
                 nodeList.Add (node);
                 canvas.Invalidate ();    
-            }                                                         
+            }
+
             
         }
 
         private void canvas_MouseDown(object sender, MouseEventArgs e)
         {
+            selectedNode = null;
             foreach (Node node in nodeList)
             {
                 node.IsSelected = false;
@@ -90,13 +116,13 @@ namespace NetworkMap
                 float dy = node.posY - e.Y;
                 if (dx * dx + dy * dy <= node.rNode * node.rNode)
                 {
+                    selectedNode = node;
                     node.IsSelected = true;
-                    canvas.Invalidate ();
                     break;
                 }
 
             }
-
+            canvas.Invalidate();
         }
 
         private void EditorModeCB_SelectedIndexChanged(object sender, EventArgs e)
@@ -119,6 +145,47 @@ namespace NetworkMap
             }
 
             _editorMode = mode;
+            canvas.Focus();
         }
+
+        private void contextMenu_Opening(object sender, CancelEventArgs e)
+        {
+            if (selectedNode == null)
+                e.Cancel = true;
+        }
+
+        private void ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var item = (sender as ToolStripMenuItem).Name;
+
+            switch (item)
+            {
+                case "senderMode": break;
+                case "TransporterMode": break;
+                case "ReceiverMode": break;
+                case "EditName":
+                    var name = Microsoft.VisualBasic.Interaction.InputBox("Введите название для нода", "Наименование нода", "", this.Width / 2, this.Height / 2);
+                    if (name == null)
+                        return;
+
+                    selectedNode.SetName(name);
+                    canvas.Invalidate();
+                    break;
+                case "EditDesc":
+                    var desc = Microsoft.VisualBasic.Interaction.InputBox("Введите описание для нода", "Описание нода", "", this.Width / 2, this.Height / 2);
+                    if (desc == null)
+                        return;
+
+                    selectedNode.SetDescription(desc);
+                    break;
+                case "EditLoc": 
+                    var location = Microsoft.VisualBasic.Interaction.InputBox("Введите расположение нода", "Расположение нода", "", this.Width/2, this.Height/2);
+                    if (location == null)
+                        return;
+
+                    selectedNode.SetLocation(location);
+                    break;
+            }
+        }                
     }
 }
