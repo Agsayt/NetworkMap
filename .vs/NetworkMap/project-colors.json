@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "a89045d7-4e7e-4498-880b-506928490188": {
+      "ProjectGuid": "a89045d7-4e7e-4498-880b-506928490188",
+      "DisplayName": "NetworkMap",
+      "ColorIndex": 0
+    }
+  },
+  "NextColorIndex": 1
+}

@@ -16,3 +16,14 @@ C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\obj\Debug\NetworkMap.Form1.res
 C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\obj\Debug\NetworkMap.Properties.Resources.resources
 C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\obj\Debug\NetworkMap.csproj.GenerateResource.Cache
 C:\Users\TEMP.RDS\Documents\NetworkMap\NetworkMap\obj\Debug\NetworkMap.csprojResolveAssemblyReference.cache
+N:\Programming\College\NetworkMap\NetworkMap\bin\Debug\NetworkMap.exe.config
+N:\Programming\College\NetworkMap\NetworkMap\bin\Debug\NetworkMap.exe
+N:\Programming\College\NetworkMap\NetworkMap\bin\Debug\NetworkMap.pdb
+N:\Programming\College\NetworkMap\NetworkMap\obj\Debug\NetworkMap.csproj.AssemblyReference.cache
+N:\Programming\College\NetworkMap\NetworkMap\obj\Debug\NetworkMap.csproj.SuggestedBindingRedirects.cache
+N:\Programming\College\NetworkMap\NetworkMap\obj\Debug\NetworkMap.Form1.resources
+N:\Programming\College\NetworkMap\NetworkMap\obj\Debug\NetworkMap.Properties.Resources.resources
+N:\Programming\College\NetworkMap\NetworkMap\obj\Debug\NetworkMap.csproj.GenerateResource.cache
+N:\Programming\College\NetworkMap\NetworkMap\obj\Debug\NetworkMap.csproj.CoreCompileInputs.cache
+N:\Programming\College\NetworkMap\NetworkMap\obj\Debug\NetworkMap.exe
+N:\Programming\College\NetworkMap\NetworkMap\obj\Debug\NetworkMap.pdb

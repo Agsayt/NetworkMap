@@ -42,7 +42,7 @@ namespace NetworkMap
                 if (dx * dx + dy * dy <= node.rNode * node.rNode)
                 {
                     node.IsSelected = true;
-                    node.rSignal += e.Delta/128;
+                    node.rSignal += e.Delta > 0 ? 1: -1 ;
                     break;
                 }
 
@@ -101,7 +101,7 @@ namespace NetworkMap
 
         private void canvas_MouseClick(object sender, MouseEventArgs e)
         {
-            if (_editorMode == EditorMode.Create)
+            if (_editorMode == EditorMode.Create && e.Button == MouseButtons.Left)
             {
                 Node node = new Node (nextId, e.X, e.Y, 100, _mode);
                 nodeList.Add (node);
@@ -162,21 +162,21 @@ namespace NetworkMap
 
         private void ToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var item = (sender as ToolStripMenuItem).Name;
+            var item = (sender as ToolStripMenuItem);
 
-            switch (item)
+            switch (item.Name)
             {
-                case "senderMode": 
-                    
+                case "senderMode":
+                    selectedNode.mode = NodeMode.Sender;
                     break;
-                case "TransporterMode": 
-                    
+                case "TransporterMode":
+                    selectedNode.mode = NodeMode.Transporter;
                     break;
-                case "ReceiverMode": 
-                    
+                case "ReceiverMode":
+                    selectedNode.mode = NodeMode.Receiver;
                     break;
                 case "EditName":
-                    var name = Microsoft.VisualBasic.Interaction.InputBox("Введите название для нода", "Наименование нода", "", this.Width / 2, this.Height / 2);
+                    var name = Microsoft.VisualBasic.Interaction.InputBox("Введите название для нода", "Наименование нода", selectedNode.Name, this.Width / 2, this.Height / 2);
                     if (name == null)
                         return;
 
@@ -184,14 +184,14 @@ namespace NetworkMap
                     canvas.Invalidate();
                     break;
                 case "EditDesc":
-                    var desc = Microsoft.VisualBasic.Interaction.InputBox("Введите описание для нода", "Описание нода", "", this.Width / 2, this.Height / 2);
+                    var desc = Microsoft.VisualBasic.Interaction.InputBox("Введите описание для нода", "Описание нода", selectedNode.Description, this.Width / 2, this.Height / 2);
                     if (desc == null)
                         return;
 
                     selectedNode.SetDescription(desc);
                     break;
                 case "EditLoc": 
-                    var location = Microsoft.VisualBasic.Interaction.InputBox("Введите расположение нода", "Расположение нода", "", this.Width/2, this.Height/2);
+                    var location = Microsoft.VisualBasic.Interaction.InputBox("Введите расположение нода", "Расположение нода", selectedNode.Location, this.Width/2, this.Height/2);
                     if (location == null)
                         return;
 
@@ -248,14 +248,117 @@ namespace NetworkMap
                         
             using (FileStream fs = File.Create(filename))
             {
-                Byte[] nextIndex = new UTF8Encoding(true).GetBytes(nextId.ToString());
+                Byte[] nextIndex = new UTF8Encoding(true).GetBytes(nextId.ToString() + "\n");
+
+                var senderN = nodeList.Where(x => x.mode == NodeMode.Sender).FirstOrDefault();
+                var receiverN = nodeList.Where(x => x.mode == NodeMode.Receiver).FirstOrDefault();
+
+                var senderIndex = senderN == null ? -1 : senderN.index;
+                var receiverIndex = receiverN == null ? -1 : receiverN.index;
+
+                Byte[] srIndex = new UTF8Encoding(true).GetBytes(senderIndex.ToString() + " " +
+                    receiverIndex.ToString() + "\n");
+
                 fs.Write(nextIndex, 0, nextIndex.Length);
+                fs.Write(srIndex, 0, srIndex.Length);
+
+                foreach (var item in nodeList)
+                {
+                    var name = item.Name != null ? $"{item.Name.Replace(" ", "%")}" : "null";
+                    var description = item.Description != null ? $"{item.Description.Replace(" ", "%")}" : "null";
+                    var location = item.Location != null ? $"{item.Location.Replace(" ", "%")}" : "null";
+
+                    Byte[] node = new UTF8Encoding(true).GetBytes
+                        (
+                            item.posX.ToString() + " " +
+                            item.posY.ToString() + " " +
+                            item.rSignal.ToString() + " " +
+                            item.index.ToString() + " " +
+                            name + " " +
+                            description + " " +
+                            location + " " +
+                            item.mode.ToString() + "\n"
+                        );
+
+                    fs.Write(node,0, node.Length);
+                }
             }
         }
 
         private void LoadPreferences_Click(object sender, EventArgs e)
         {
-            
+            if (openFileDialog.ShowDialog() == DialogResult.Cancel)
+                return;
+
+            nodeList.Clear();
+            string filename = openFileDialog.FileName;
+
+            foreach(var line in File.ReadLines(filename))
+            {
+                List<string> vars = line.Split(' ').ToList();
+                var flagToApped = false;
+
+                for (int i = 0; i < vars.Count; i++)
+                {
+                    if (vars[i].Contains('%'))
+                        vars[i] = vars[i].Replace('%', ' ');
+
+                    #region 1st solution
+                    //if (vars[i] == "'")
+                    //{
+                    //    flagToApped = !flagToApped;
+                    //    vars.RemoveAt(i);
+                    //    continue;
+                    //}
+
+                    //if (flagToApped)
+                    //{
+                    //    vars[i - 1] = vars[i-1] + " " + vars[i];
+                    //    vars.RemoveAt(i);
+                    //}
+                    #endregion
+                }
+
+                switch (vars.Count)
+                {
+                    case 1:
+                        nextId = int.Parse(vars[0]);
+                        break;
+                    case 2:
+
+                        break;
+                    case 8:
+                                                
+                        switch (vars[7])
+                        {
+                            case "Sender":
+                                _mode = NodeMode.Sender;
+                                break;
+                            case "Transporter":
+                                _mode = NodeMode.Transporter;
+                                break;
+                            case "Receiver":
+                                _mode = NodeMode.Receiver;
+                                break;
+                        }
+
+                        var node = new Node(int.Parse(vars[3]), int.Parse(vars[0]), int.Parse(vars[1]), int.Parse(vars[2]), _mode);
+
+                        if (vars[4] != "null")
+                            node.Name = vars[4];
+
+                        if (vars[5] != "null")
+                            node.Description = vars[5];
+
+                        if (vars[6] != "null")
+                            node.Location = vars[6];
+
+                        nodeList.Add(node);
+                        canvas.Invalidate();
+                        break;
+                       
+                }
+            }
 
         }
 

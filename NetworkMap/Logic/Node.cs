@@ -16,9 +16,9 @@ namespace NetworkMap.Logic
         public int posY;
         public float rSignal;
         public float rNode;       
-        private string Name { get; set; }
-        private string Description { get; set; }
-        private string Location { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Location { get; set; }
         public Pen penColor;
         public NetworkMap.Form1.NodeMode mode;
 
@@ -87,11 +87,12 @@ namespace NetworkMap.Logic
             if (IsSelected == true)
             {
                 g.DrawEllipse(p, x0, y0, diameter, diameter);
-                if (Name != null)
-                    g.DrawString(Name, new Font("Arial", 12), new SolidBrush(Color.Black), new PointF(posX, posY + rNode + 0.5f));
+                
                 p = Pens.Green;
             }
 
+            if (Name != null)
+                g.DrawString(Name, new Font("Arial", 12), new SolidBrush(Color.Black), new PointF(posX, posY + rNode + 0.5f));
             g.DrawEllipse(p, x0Node, y0Node, nodeDiameter, nodeDiameter);
         }
 
