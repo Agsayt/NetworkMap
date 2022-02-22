@@ -1,5 +1,7 @@
-3
--1 -1
-554 160 100 0 N1 Some%text%here Somewhere%rin%tom%kan Transporter
-893 234 100 1 NLast null null Transporter
-495 347 100 2 null null null Transporter
+5
+1 0
+731 194 100 0 NLast null null Receiver
+522 256 164 1 N1 Some%text%and%description Somewhere Sender
+686 362 62 2 NSomething null null Transporter
+278 226 100 3 null null null Transporter
+420 399 100 4 null null null Transporter
