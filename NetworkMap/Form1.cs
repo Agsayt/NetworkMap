@@ -177,7 +177,7 @@ namespace NetworkMap
                     break;
                 case "EditName":
                     var name = Microsoft.VisualBasic.Interaction.InputBox("Введите название для нода", "Наименование нода", selectedNode.Name, this.Width / 2, this.Height / 2);
-                    if (name == null)
+                    if (String.IsNullOrWhiteSpace(name))
                         return;
 
                     selectedNode.SetName(name);
@@ -185,14 +185,14 @@ namespace NetworkMap
                     break;
                 case "EditDesc":
                     var desc = Microsoft.VisualBasic.Interaction.InputBox("Введите описание для нода", "Описание нода", selectedNode.Description, this.Width / 2, this.Height / 2);
-                    if (desc == null)
+                    if (String.IsNullOrWhiteSpace(desc))
                         return;
 
                     selectedNode.SetDescription(desc);
                     break;
                 case "EditLoc": 
                     var location = Microsoft.VisualBasic.Interaction.InputBox("Введите расположение нода", "Расположение нода", selectedNode.Location, this.Width/2, this.Height/2);
-                    if (location == null)
+                    if (String.IsNullOrWhiteSpace(location))
                         return;
 
                     selectedNode.SetLocation(location);
